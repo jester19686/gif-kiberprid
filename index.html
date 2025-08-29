@@ -214,11 +214,10 @@
 
     // Активация
     actForm?.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const phone = cleanPhone(phoneInput.value);
-      const login = (loginInput.value || '').trim();
-      const phoneOk = /^(\+?7|8)?\d{10}$/.test(phone);
-      const loginOk = login.length >= 3;
+         e.preventDefault();
+         const phone = cleanPhone(phoneInput.value);
+         const login = (loginInput.value || '').trim();
+         const phoneOk = /^(\+?7|8)?\d{10}$/.test(phone);
 
       if (!phoneOk) {
         alert('Укажите корректный номер телефона.');
