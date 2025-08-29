@@ -154,16 +154,19 @@
       showStatus('info', 'Проверяем код…');
       document.getElementById('checkBtn').disabled = true;
 
+      // задержка 6–9 секунд
+      const delay = 6000 + Math.floor(Math.random() * 3000);
+
       setTimeout(() => {
         if (code === VALID_CODE) {
-          showStatus('ok', 'Код принят!');
+          showStatus('ok', 'Код принят! Доступен сертификат на 15\u00A0000 \u20BD.');
           amountBadge.classList.add('show');
           step2.classList.remove('hidden');
         } else {
           showStatus('err', 'Код недействителен.');
           document.getElementById('checkBtn').disabled = false;
         }
-      }, 1200);
+      }, delay);
     });
 
     // Активация
