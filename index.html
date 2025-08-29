@@ -235,19 +235,10 @@
         // Готово
         showStatus(success, 'ok', 'Готово! Сертификат будет привязан к вашему аккаунту.');
 
-        // ▼ ДОБАВЛЕНО: показать «Привязка к аккаунту… (30 сек.)» с обратным отсчётом
-        let seconds = 30;
+        // ▼ ИЗМЕНЕНО: показать статичное «Привязка к аккаунту… (30 сек.)» без обратного отсчёта
         pending.classList.add('show');
-        pendingText.textContent = `Привязка к аккаунту… (${seconds} сек.)`;
-        const timer = setInterval(() => {
-          seconds--;
-          pendingText.textContent = `Привязка к аккаунту… (${seconds} сек.)`;
-          if (seconds <= 0) {
-            clearInterval(timer);
-            pending.classList.remove('show');
-          }
-        }, 1000);
-        // ▲ КОНЕЦ ДОБАВЛЕНИЯ
+        pendingText.textContent = 'Привязка к аккаунту… (30 сек.)';
+        // ▲ КОНЕЦ ИЗМЕНЕНИЯ
 
         // Через 30 секунд показать финальный экран
         setTimeout(() => {
