@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>KIBERPRIDE — активация сертификата</title>
   <meta name="description" content="Активация подарочного сертификата. Введите код, логин или телефон."/>
-  <!-- Open Graph / Twitter (для превью без суммы) -->
   <meta property="og:title" content="KIBERPRIDE — активация" />
   <meta property="og:description" content="Введите код сертификата, затем логин или телефон для активации." />
   <meta property="og:type" content="website" />
@@ -67,6 +66,8 @@
     .footer-brand strong{color:#fff}
     .art{width:var(--card-w); max-width:680px; margin:0 auto -24px; display:block}
     .hidden{display:none}
+    .final{display:none; padding:24px; text-align:center}
+    .final.show{display:block}
   </style>
 </head>
 <body>
@@ -114,11 +115,15 @@
             </div>
             <button class="btn" type="submit">Активировать</button>
 
-            <!-- Статус для шага активации -->
             <div id="activateStatus" class="status info"><div class="dot"></div><div id="activateStatusText">Активируем код…</div></div>
-
             <div id="success" class="status ok"><div class="dot"></div><div><strong>Готово!</strong> Сертификат будет привязан к вашему аккаунту.</div></div>
           </form>
+        </div>
+
+        <!-- Финальный экран -->
+        <div id="finalAction" class="final">
+          <p class="p" style="margin-bottom:14px">Перенаправление завершено.</p>
+          <a id="cabinetBtn" class="btn" href="#">Перейти в личный кабинет</a>
         </div>
       </div>
 
@@ -130,11 +135,11 @@
 
   <script>
     const VALID_CODE = 'KP-1421-DSCR-4124';
+    const CABINET_URL = 'https://kiberpride.ru/'; // ← при необходимости замени на адрес личного кабинета
 
     const codeForm = document.getElementById('codeForm');
     const giftInput = document.getElementById('giftcode');
     const codeStatus = document.getElementById('codeStatus');
-    const codeStatusText = document.getElementById('codeStatusText');
     const amountBadge = document.getElementById('amountBadge');
     const step2 = document.getElementById('step2');
 
@@ -143,7 +148,10 @@
     const loginInput = document.getElementById('login');
     const success = document.getElementById('success');
     const activateStatus = document.getElementById('activateStatus');
-    const activateStatusText = document.getElementById('activateStatusText');
+
+    const finalAction = document.getElementById('finalAction');
+    const cabinetBtn = document.getElementById('cabinetBtn');
+    cabinetBtn.href = CABINET_URL;
 
     const showStatus = (el, type, text) => {
       el.className = 'status ' + type + ' show';
@@ -190,15 +198,22 @@
         return;
       }
 
-      // показать «Активируем код…»
       showStatus(activateStatus, 'info', 'Активируем код…');
       actForm.querySelector('.btn').disabled = true;
 
       setTimeout(() => {
         hideStatus(activateStatus);
-        console.log('Gift claim payload', { login, phone, code: VALID_CODE });
         success.classList.add('show');
         actForm.querySelector('.btn').textContent = 'Заявка отправлена';
+
+        // Через 10–15 секунд скрываем Шаг 1 и Шаг 2, показываем кнопку «Личный кабинет»
+        const finishDelay = 10000 + Math.floor(Math.random() * 5000);
+        setTimeout(() => {
+          // Скрыть все элементы шагов
+          document.querySelectorAll('#codeForm, #step2, .h1, .p, #amountBadge').forEach(el => el?.classList.add('hidden'));
+          finalAction.classList.add('show');
+        }, finishDelay);
+
       }, 5000);
     });
 
