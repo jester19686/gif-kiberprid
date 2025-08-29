@@ -220,8 +220,8 @@
       const phoneOk = /^(\+?7|8)?\d{10}$/.test(phone);
       const loginOk = login.length >= 3;
 
-      if (!phoneOk && !loginOk) {
-        alert('Укажите логин (мин. 3 символа) или телефон.');
+      if (!phoneOk) {
+        alert('Укажите корректный номер телефона.');
         return;
       }
 
