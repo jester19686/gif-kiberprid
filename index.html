@@ -3,142 +3,117 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Подарочный сертификат — 15 000 ₽</title>
-  <meta name="description" content="Вы получили подарочный сертификат на 15 000 ₽. Введите логин или номер телефона, чтобы активировать."/>
+  <title>Подарочный сертификат — активация</title>
+  <meta name="description" content="Введите код сертификата, затем логин или телефон для активации."/>
   <style>
     :root{
       --bg-blur: 8px;
       --card-w: min(560px, 92vw);
-      --brand: #1b48f0; /* синий */
-      --accent: #ff3d2e; /* красный */
+      --brand: #1b48f0;
+      --accent: #ff3d2e;
       --ok: #16a34a;
       --text: #0b1220;
       --text-weak: #5b6474;
+      --error: #dc2626;
     }
     html,body{height:100%;}
     body{
       margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, "Noto Sans";
       color: var(--text);
-      display:grid;
-      place-items:center;
-      background: #0c1a3a url('background.jpg') center/cover no-repeat fixed; /* Замените background.jpg на ваш файл */
-    }
-    .backdrop{
-      position:fixed; inset:0; background: rgba(5,12,28,.55);
-    }
-    .page{
-      position:relative; z-index:1; width:100%; padding: 32px 16px 60px;
       display:grid; place-items:center;
+      background:#0c1a3a url('background.jpg') center/cover no-repeat fixed;
     }
-    .card{
-      width: var(--card-w);
-      background: rgba(255,255,255,.9);
-      backdrop-filter: blur(var(--bg-blur));
-      border-radius: 22px;
-      box-shadow: 0 20px 60px rgba(0,0,0,.35);
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,.6);
-    }
-    .header{
-      background: linear-gradient(120deg, var(--brand), #6a8df8 60%);
-      color: #fff; padding: 22px 24px;
-    }
-    .header .title{font-size: clamp(22px, 3.2vw, 28px); font-weight: 800; letter-spacing:.3px; margin: 0 0 4px;}
-    .header .subtitle{opacity:.92; margin:0; font-size: 14px}
-
-    .content{padding: 22px 22px 8px;}
-    .badge{
-      display:inline-flex; align-items:center; gap:8px;
-      background: #fff; color: var(--brand); font-weight: 800;
-      border-radius: 999px; padding: 8px 14px; border:1px solid rgba(13,30,68,.1);
-      box-shadow: 0 4px 14px rgba(27,72,240,.18);
-      margin: -48px 0 14px;
-    }
-    .amount{font-size: 26px}
-
-    .h1{font-size: clamp(20px, 2.8vw, 24px); margin: 6px 0 10px; font-weight: 800}
-    .p{margin:0 0 18px; color: var(--text-weak); line-height:1.55}
-
+    .backdrop{position:fixed; inset:0; background:rgba(5,12,28,.55);}
+    .page{position:relative; z-index:1; width:100%; padding:32px 16px 60px; display:grid; place-items:center;}
+    .card{width:var(--card-w); background:rgba(255,255,255,.9); backdrop-filter:blur(var(--bg-blur));
+      border-radius:22px; box-shadow:0 20px 60px rgba(0,0,0,.35); overflow:hidden; border:1px solid rgba(255,255,255,.6);}
+    .header{background:linear-gradient(120deg, var(--brand), #6a8df8 60%); color:#fff; padding:22px 24px;}
+    .header .title{font-size:clamp(22px,3.2vw,28px); font-weight:800; margin:0 0 4px;}
+    .header .subtitle{opacity:.92; margin:0; font-size:14px}
+    .content{padding:22px 22px 8px;}
+    .badge{display:none; align-items:center; gap:8px; background:#fff; color:var(--brand); font-weight:800;
+      border-radius:999px; padding:8px 14px; border:1px solid rgba(13,30,68,.1); box-shadow:0 4px 14px rgba(27,72,240,.18); margin:-48px 0 14px;}
+    .badge.show{display:inline-flex}
+    .amount{font-size:26px}
+    .h1{font-size:clamp(20px,2.8vw,24px); margin:6px 0 10px; font-weight:800}
+    .p{margin:0 0 18px; color:var(--text-weak); line-height:1.55}
     form{display:grid; gap:12px; margin-top:10px}
     .field{display:grid; gap:6px}
-    label{font-size: 14px; color: var(--text-weak)}
-    input{
-      height: 48px; border-radius: 14px; outline: none; border:1px solid #d7deea;
-      padding: 0 14px; font-size: 16px; transition:.2s border, .2s box-shadow, .2s background;
-      background:#fff;
-    }
-    input:focus{border-color: var(--brand); box-shadow: 0 0 0 4px rgba(27,72,240,.12)}
-
+    label{font-size:14px; color:var(--text-weak)}
+    input{height:48px; border-radius:14px; outline:none; border:1px solid #d7deea; padding:0 14px; font-size:16px; transition:.2s; background:#fff;}
+    input:focus{border-color:var(--brand); box-shadow:0 0 0 4px rgba(27,72,240,.12)}
     .row{display:flex; gap:12px; flex-wrap:wrap}
     .row .field{flex:1 1 220px}
-
-    .btn{
-      cursor:pointer; user-select:none; height: 52px; border-radius: 16px; border:0;
-      font-weight: 800; letter-spacing:.2px; font-size:16px;
-      background: linear-gradient(120deg, var(--accent), #ff7a70);
-      color:#fff; box-shadow: 0 12px 30px rgba(255,61,46,.35);
-      transition: transform .06s ease-in-out, filter .2s;
-    }
-    .btn:hover{filter: brightness(1.05)}
-    .btn:active{transform:translateY(1px)}
-
-    .legal{font-size: 12px; color: var(--text-weak); text-align:center; padding: 10px 18px 20px}
-
-    .success{display:none; gap:10px; align-items:flex-start; border-radius: 14px; background:#ecfdf3; border:1px solid #cdebd6; padding:14px; margin-top:12px}
-    .success.show{display:flex}
-    .success .dot{width:12px;height:12px;border-radius:50%;background:var(--ok); margin-top:4px}
-
+    .btn{cursor:pointer; user-select:none; height:52px; border-radius:16px; border:0; font-weight:800; letter-spacing:.2px; font-size:16px;
+      background:linear-gradient(120deg, var(--accent), #ff7a70); color:#fff; box-shadow:0 12px 30px rgba(255,61,46,.35);
+      transition: transform .06s, filter .2s;}
+    .btn:hover{filter:brightness(1.05)} .btn:active{transform:translateY(1px)} .btn[disabled]{opacity:.65; cursor:not-allowed}
+    .legal{font-size:12px; color:var(--text-weak); text-align:center; padding:10px 18px 20px}
+    .status{display:none; gap:10px; align-items:flex-start; border-radius:14px; padding:14px; margin-top:12px}
+    .status.show{display:flex}
+    .status.info{background:#eff6ff; border:1px solid #dbeafe; color:#1e3a8a}
+    .status.ok{background:#ecfdf3; border:1px solid #cdebd6; color:#065f46}
+    .status.err{background:#fef2f2; border:1px solid #fecaca; color:#991b1b}
+    .status .dot{width:12px;height:12px;border-radius:50%;margin-top:4px}
+    .status.info .dot{background:#3b82f6}
+    .status.ok .dot{background:var(--ok)}
+    .status.err .dot{background:var(--error)}
     .footer-brand{display:flex; justify-content:center; gap:8px; align-items:center; color:#c9d6ff; font-size:12px; margin-top:14px}
     .footer-brand strong{color:#fff}
-
-    /* small helper for the background art at the top */
-    .art{
-      width: var(--card-w);
-      max-width: 680px; margin: 0 auto -24px; display: block;
-    }
+    .art{width:var(--card-w); max-width:680px; margin:0 auto -24px; display:block}
+    .hidden{display:none}
   </style>
 </head>
 <body>
   <div class="backdrop" aria-hidden="true"></div>
   <main class="page" role="main">
-    <!-- Опционально: верхняя картинка поверх фона (можно удалить, если фон уже достаточен) -->
     <img class="art" src="art.png" alt="Герой и надпись Подарочный сертификат" />
 
     <section class="card" aria-labelledby="giftTitle">
       <header class="header">
-        <h1 id="giftTitle" class="title">Вы получили подарочный сертификат</h1>
-        <p class="subtitle">Активируйте его за минуту — укажите логин или телефон</p>
+        <h1 id="giftTitle" class="title">Активация подарочного сертификата</h1>
+        <p class="subtitle">Сначала укажите код сертификата, затем логин или телефон</p>
       </header>
 
       <div class="content">
-        <span class="badge" aria-label="Сумма сертификата"><span>Сумма:</span> <span class="amount">15 000 ₽</span></span>
-        <div class="h1">Активация сертификата</div>
-        <p class="p">Введите ваш <strong>логин</strong> на платформе или <strong>номер телефона</strong>, чтобы мы привязали сертификат к вашему аккаунту. После активации баланс пополнится на указанную сумму.</p>
+        <span id="amountBadge" class="badge" aria-label="Сумма сертификата"><span>Сумма:</span> <span class="amount">15 000 ₽</span></span>
 
-        <form id="activateForm" novalidate>
+        <div class="h1">Шаг 1. Код сертификата</div>
+        <p class="p">Введите код формата <strong>XXXX-XXXX-XXXX-XXXX</strong>. Если пришли по персональной ссылке, поле заполнится автоматически.</p>
+
+        <form id="codeForm" novalidate>
           <div class="row">
-            <div class="field">
-              <label for="login">Логин (если есть)</label>
-              <input id="login" name="login" type="text" placeholder="Ваш логин" autocomplete="username" />
-            </div>
-            <div class="field">
-              <label for="phone">Телефон</label>
-              <input id="phone" name="phone" type="tel" inputmode="tel" placeholder="+7 900 000-00-00" autocomplete="tel" pattern="^(\+?7|8)?\s?\(?\d{3}\)?[\s-]?\d{3}[\s-]?\d{2}[\s-]?\d{2}$" />
+            <div class="field" style="flex:1 1 100%">
+              <label for="giftcode">Код</label>
+              <input id="giftcode" name="giftcode" type="text" placeholder="KP-1421-DSCR-4124" autocomplete="one-time-code" />
             </div>
           </div>
-
-          <button class="btn" type="submit">Получить сертификат</button>
-
-          <div id="success" class="success" role="status" aria-live="polite">
-            <div class="dot" aria-hidden="true"></div>
-            <div>
-              <strong>Готово!</strong>
-              <div>Заявка отправлена. Мы привяжем сертификат 15 000 ₽ к вашему аккаунту и сообщим об активации.</div>
-            </div>
-          </div>
+          <button class="btn" type="submit" id="checkBtn">Проверить код</button>
+          <div id="codeStatus" class="status info"><div class="dot"></div><div id="codeStatusText">Проверяем код…</div></div>
         </form>
+
+        <div id="step2" class="hidden">
+          <div class="h1">Шаг 2. Активация</div>
+          <p class="p">Код принят! Укажите <strong>логин</strong> или <strong>номер телефона</strong>, чтобы привязать сертификат к вашему аккаунту.</p>
+
+          <form id="activateForm" novalidate>
+            <div class="row">
+              <div class="field">
+                <label for="login">Логин (если есть)</label>
+                <input id="login" name="login" type="text" placeholder="Ваш логин" autocomplete="username" />
+              </div>
+              <div class="field">
+                <label for="phone">Телефон</label>
+                <input id="phone" name="phone" type="tel" inputmode="tel" placeholder="+7 900 000-00-00" autocomplete="tel" pattern="^(\+?7|8)?\s?\(?\d{3}\)?[\s-]?\d{3}[\s-]?\d{2}[\s-]?\d{2}$" />
+              </div>
+            </div>
+            <button class="btn" type="submit">Получить сертификат</button>
+            <div id="success" class="status ok"><div class="dot"></div><div><strong>Готово!</strong> Сертификат на <b>15 000 ₽</b> будет привязан к вашему аккаунту. Мы сообщим об активации.</div></div>
+          </form>
+        </div>
       </div>
+
       <div class="legal">Нажимая кнопку, вы соглашаетесь с обработкой персональных данных и условиями оферты.</div>
     </section>
 
@@ -146,37 +121,80 @@
   </main>
 
   <script>
-    const form = document.getElementById('activateForm');
+    // Единственный рабочий код
+    const VALID_CODE = 'KP-1421-DSCR-4124';
+
+    // Элементы
+    const codeForm = document.getElementById('codeForm');
+    const giftInput = document.getElementById('giftcode');
+    const codeStatus = document.getElementById('codeStatus');
+    const codeStatusText = document.getElementById('codeStatusText');
+    const amountBadge = document.getElementById('amountBadge');
+    const step2 = document.getElementById('step2');
+
+    const actForm = document.getElementById('activateForm');
     const phoneInput = document.getElementById('phone');
     const loginInput = document.getElementById('login');
     const success = document.getElementById('success');
 
-    function cleanPhone(v){
-      return (v||'').replace(/[^\d+]/g,'');
-    }
+    const showStatus = (type, text) => {
+      codeStatus.className = 'status ' + type + ' show';
+      codeStatusText.textContent = text;
+    };
+    const normalizeCode = v => (v || '').toUpperCase().trim();
+    const cleanPhone = v => (v || '').replace(/[^\d+]/g,'');
 
-    form.addEventListener('submit', (e)=>{
+    // Проверка кода
+    codeForm.addEventListener('submit', (e) => {
       e.preventDefault();
+      const code = normalizeCode(giftInput.value);
+      if (!code) { showStatus('err', 'Введите код сертификата.'); return; }
 
+      showStatus('info', 'Проверяем код…');
+      document.getElementById('checkBtn').disabled = true;
+
+      setTimeout(() => {
+        if (code === VALID_CODE) {
+          showStatus('ok', 'Код принят! Доступен сертификат на 15\u00A0000 \u20BD.');
+          amountBadge.classList.add('show');
+          step2.classList.remove('hidden');
+        } else {
+          showStatus('err', 'Код недействителен. Проверьте написание и попробуйте ещё раз.');
+          document.getElementById('checkBtn').disabled = false;
+        }
+      }, 1200); // имитация ожидания
+    });
+
+    // Активация
+    actForm?.addEventListener('submit', (e) => {
+      e.preventDefault();
       const phone = cleanPhone(phoneInput.value);
       const login = (loginInput.value || '').trim();
-
-      // Простая валидация: нужен либо логин, либо корректный телефон
       const phoneOk = /^(\+?7|8)?\d{10}$/.test(phone);
       const loginOk = login.length >= 3;
 
-      if(!phoneOk && !loginOk){
+      if (!phoneOk && !loginOk) {
         alert('Укажите логин (мин. 3 символа) или корректный телефон в формате РФ.');
         return;
       }
-
-      // Здесь можно отправить данные на ваш сервер (fetch). Пока просто имитируем успешную отправку.
-      console.log('Gift claim payload', { amount: 15000, currency: 'RUB', login, phone });
-
+      console.log('Gift claim payload', { amount: 15000, currency: 'RUB', login, phone, code: VALID_CODE });
       success.classList.add('show');
-      form.querySelector('.btn').disabled = true;
-      form.querySelector('.btn').textContent = 'Заявка отправлена';
+      actForm.querySelector('.btn').disabled = true;
+      actForm.querySelector('.btn').textContent = 'Заявка отправлена';
     });
+
+    // Автозаполнение кода из URL: /<code> или ?code=<code>
+    (function prefillFromURL(){
+      const url = new URL(window.location.href);
+      const byQuery = url.searchParams.get('code');
+      let byPath = decodeURIComponent(url.pathname.replace(/^\//,''));
+      if (byPath && byPath.includes('/')) byPath = '';
+      const candidate = normalizeCode(byQuery || byPath);
+      if (candidate) {
+        giftInput.value = candidate;
+        document.getElementById('checkBtn').click();
+      }
+    })();
   </script>
 </body>
 </html>
