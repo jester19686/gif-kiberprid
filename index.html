@@ -135,6 +135,12 @@
             </div>
             <button class="btn" type="submit">Активировать</button>
             <div id="success" class="status info"><div class="dot"></div><div id="successText">Активируем код…</div></div>
+            <!-- ▼ ДОБАВЛЕНО: блок ожидания привязки на 30 сек -->
+            <div id="pending" class="status info" style="margin-top:12px;">
+              <div class="dot"></div>
+              <div id="pendingText">Привязка к аккаунту… (30 сек.)</div>
+            </div>
+            <!-- ▲ КОНЕЦ ДОБАВЛЕНИЯ -->
           </form>
         </div>
 
@@ -172,6 +178,10 @@
     const loginInput = document.getElementById('login');
     const success = document.getElementById('success');
     const successText = document.getElementById('successText');
+    // ▼ ДОБАВЛЕНО: ссылки на новый блок ожидания
+    const pending = document.getElementById('pending');
+    const pendingText = document.getElementById('pendingText');
+    // ▲ КОНЕЦ ДОБАВЛЕНИЯ
 
     const showStatus = (el, type, text) => {
       el.className = 'status ' + type + ' show';
@@ -215,15 +225,29 @@
         return;
       }
 
-      // Показать процесс активации
+      // Показать процесс активации (5–9 сек)
       showStatus(success, 'info', 'Активируем код…');
       actForm.querySelector('.btn').disabled = true;
       actForm.querySelector('.btn').textContent = 'Заявка отправлена';
 
-      // задержка 5–9 секунд
       const delay = 5000 + Math.floor(Math.random() * 4000);
       setTimeout(() => {
+        // Готово
         showStatus(success, 'ok', 'Готово! Сертификат будет привязан к вашему аккаунту.');
+
+        // ▼ ДОБАВЛЕНО: показать «Привязка к аккаунту… (30 сек.)» с обратным отсчётом
+        let seconds = 30;
+        pending.classList.add('show');
+        pendingText.textContent = `Привязка к аккаунту… (${seconds} сек.)`;
+        const timer = setInterval(() => {
+          seconds--;
+          pendingText.textContent = `Привязка к аккаунту… (${seconds} сек.)`;
+          if (seconds <= 0) {
+            clearInterval(timer);
+            pending.classList.remove('show');
+          }
+        }, 1000);
+        // ▲ КОНЕЦ ДОБАВЛЕНИЯ
 
         // Через 30 секунд показать финальный экран
         setTimeout(() => {
@@ -247,6 +271,7 @@
       }
     })();
 
+    // Переход по кнопке в "личный кабинет" на видео
     const cabinetBtn = document.getElementById('cabinetBtn');
     if (cabinetBtn) cabinetBtn.href = 'https://rickroll.it/rickroll.mp4';
   </script>
