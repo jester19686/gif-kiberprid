@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>KIBERPRIDE — активация сертификата</title>
   <meta name="description" content="Активация подарочного сертификата. Введите код, логин или телефон."/>
-  <!-- Open Graph / Twitter (для превью без суммы) -->
+  <!-- Open Graph / Twitter -->
   <meta property="og:title" content="KIBERPRIDE — активация" />
   <meta property="og:description" content="Введите код сертификата, затем логин или телефон для активации." />
   <meta property="og:type" content="website" />
@@ -218,13 +218,12 @@
       actForm.querySelector('.btn').disabled = true;
       actForm.querySelector('.btn').textContent = 'Заявка отправлена';
 
-      // Через 10–15 секунд показать финальный экран
-      const delay = 10000 + Math.floor(Math.random() * 5000);
+      // Через 30 секунд показать финальный экран
       setTimeout(() => {
         step1.classList.add('hidden');
         step2.classList.add('hidden');
         finalAction.classList.remove('hidden');
-      }, delay);
+      }, 30000);
     });
 
     // Автозаполнение кода из URL
