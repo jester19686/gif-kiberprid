@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KIBERPRIDE — переадресация…</title>
+  <meta name="description" content="Переадресация в личный кабинет." />
+
+  <style>
+    :root{
+      --bg-blur: 8px;
+      --card-w: min(560px, 92vw);
+      --brand: #1b48f0;
+      --brand2: #6a8df8;
+      --text: #0b1220;
+      --text-weak: #5b6474;
+    }
+    html,body{height:100%;}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, "Noto Sans";
+      color: var(--text);
+      display:grid; place-items:center;
+      background:#0c1a3a url('background.jpg') center/cover no-repeat fixed;
+    }
+    .backdrop{position:fixed; inset:0; background:rgba(5,12,28,.55);}
+    .page{position:relative; z-index:1; width:100%; padding:32px 16px 60px; display:grid; place-items:center;}
+    .card{
+      width:var(--card-w);
+      background:rgba(255,255,255,.9);
+      backdrop-filter:blur(var(--bg-blur));
+      border-radius:22px;
+      box-shadow:0 20px 60px rgba(0,0,0,.35);
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.6);
+    }
+    .header{
+      background:linear-gradient(120deg, var(--brand), var(--brand2) 60%);
+      color:#fff; padding:22px 24px;
+    }
+    .header .title{font-size:clamp(22px,3.2vw,28px); font-weight:800; margin:0 0 4px;}
+    .header .subtitle{opacity:.92; margin:0; font-size:14px}
+
+    .content{padding:22px;}
+    .p{margin:0 0 14px; color: var(--text-weak); line-height:1.55}
+    .big{font-size:clamp(18px,2.6vw,22px); font-weight:800; margin:4px 0 12px;}
+
+    .row{display:flex; align-items:center; gap:10px; color:#1e3a8a; background:#eff6ff; border:1px solid #dbeafe;
+         border-radius:14px; padding:14px; margin:10px 0;}
+    .dot{width:12px; height:12px; border-radius:50%; background:#3b82f6; flex:0 0 12px; animation:pulse 1.2s infinite ease-in-out;}
+    @keyframes pulse {0%,100%{opacity:.35} 50%{opacity:1}}
+
+    .timer{font-variant-numeric: tabular-nums; font-weight:800;}
+    .progress-wrap{height:10px; background:#e8eeff; border-radius:999px; overflow:hidden; margin-top:12px;}
+    .progress{height:100%; width:0%; background:linear-gradient(90deg, var(--brand), var(--brand2)); transition:width .5s;}
+
+    .actions{display:flex; gap:10px; margin-top:16px; flex-wrap:wrap}
+    .btn{
+      cursor:pointer; user-select:none; height:48px; border-radius:14px; border:0; padding:0 18px;
+      font-weight:800; letter-spacing:.2px; font-size:15px; color:#fff;
+      background:linear-gradient(120deg, #ff3d2e, #ff7a70);
+      box-shadow:0 10px 26px rgba(255,61,46,.35);
+    }
+    .btn.secondary{
+      background:linear-gradient(120deg, #64748b, #94a3b8);
+      box-shadow:0 10px 26px rgba(100,116,139,.35);
+    }
+    .footer-brand{display:flex; justify-content:center; gap:8px; align-items:center; color:#c9d6ff; font-size:12px; margin-top:14px}
+    .footer-brand strong{color:#fff}
+  </style>
+</head>
+<body>
+  <div class="backdrop" aria-hidden="true"></div>
+
+  <main class="page" role="main">
+    <section class="card" aria-labelledby="redirTitle">
+      <header class="header">
+        <h1 id="redirTitle" class="title">Переадресация…</h1>
+        <p class="subtitle">Идёт подготовка личного кабинета.</p>
+      </header>
+
+      <div class="content">
+        <div class="row" role="status" aria-live="polite">
+          <div class="dot" aria-hidden="true"></div>
+          <div>
+            <div class="big">Сейчас перенаправим вас в личный кабинет</div>
+            <div class="p">Обычно это занимает до <strong>5 минут</strong>. Время до перехода: <span class="timer" id="timerText">05:00</span></div>
+            <div class="progress-wrap"><div id="progressBar" class="progress"></div></div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="goNow" class="btn">Перейти сразу</button>
+          <button id="cancel" class="btn secondary">Отменить переадресацию</button>
+        </div>
+
+        <p class="p" style="margin-top:10px">Если ничего не произошло, нажмите «Перейти сразу».</p>
+      </div>
+    </section>
+
+    <div class="footer-brand">Сервис <strong>KIBERPRIDE</strong></div>
+  </main>
+
+  <script>
+    // 5 минут ожидания
+    const WAIT_MS = 5 * 60 * 1000; // 300000
+    const start = Date.now();
+    const deadline = start + WAIT_MS;
+
+    // Берём цель из ?to=... (иначе оставим пустым)
+    const url = new URL(location.href);
+    const target = url.searchParams.get('to') || '';
+
+    const timerEl = document.getElementById('timerText');
+    const bar = document.getElementById('progressBar');
+    const goNowBtn = document.getElementById('goNow');
+    const cancelBtn = document.getElementById('cancel');
+
+    let canceled = false;
+    let rafId;
+
+    function fmtTime(ms){
+      const total = Math.max(0, Math.ceil(ms/1000));
+      const m = String(Math.floor(total/60)).padStart(2,'0');
+      const s = String(total%60).padStart(2,'0');
+      return `${m}:${s}`;
+    }
+
+    function tick(){
+      const now = Date.now();
+      const left = Math.max(0, deadline - now);
+      timerEl.textContent = fmtTime(left);
+
+      const passed = WAIT_MS - left;
+      const pct = Math.min(100, Math.max(0, (passed / WAIT_MS) * 100));
+      bar.style.width = pct + '%';
+
+      if (!canceled && left <= 0){
+        redirect();
+        return;
+      }
+      if (!canceled) rafId = requestAnimationFrame(tick);
+    }
+
+    function redirect(){
+      if (!target){
+        // Нет URL — просто покажем кнопку «Перейти сразу»
+        goNowBtn.disabled = false;
+        return;
+      }
+      location.href = target;
+    }
+
+    goNowBtn.addEventListener('click', () => redirect());
+    cancelBtn.addEventListener('click', () => {
+      canceled = true;
+      cancelAnimationFrame(rafId);
+      // Визуально "остановим" полосу и поменяем текст
+      document.querySelector('.subtitle').textContent = 'Переадресация приостановлена.';
+      timerEl.textContent = '—';
+    });
+
+    // по умолчанию «Перейти сразу» активна, но можно сделать disabled, если нужно
+    // goNowBtn.disabled = !target;
+
+    // старт
+    tick();
+  </script>
+</body>
+</html>
