@@ -280,9 +280,12 @@
       }
     })();
 
-    // Переход по кнопке в "личный кабинет" на видео
+    // Переход через заглушку (redirect.html -> авто-редирект через 5 минут)
     const cabinetBtn = document.getElementById('cabinetBtn');
-    if (cabinetBtn) cabinetBtn.href = 'https://rickroll.it/rickroll.mp4';
+    if (cabinetBtn) {
+       const target = 'https://rickroll.it/rickroll.mp4';
+       cabinetBtn.href = 'redirect.html?to=' + encodeURIComponent(target);
+       }
   </script>
 </body>
 </html>
